@@ -13,7 +13,7 @@ class Posteo extends Table {
   TextColumn get Body => text().named('body')();
 }
 
-LazyDatabase abrorConexion() {
+LazyDatabase abrirConexion() {
   return LazyDatabase(() async {
     final dbFolder = await getApplicationDocumentsDirectory();
     final file = File(p.join(dbFolder.path, 'dbPost.sqlite'));
@@ -23,7 +23,15 @@ LazyDatabase abrorConexion() {
 
 @DriftDatabase(tables: [Posteo])
 class AppDataBases extends _$AppDataBases {
-  AppDataBases(NativeDatabase nativeDatabase) : super(abrorConexion());
+  AppDataBases(NativeDatabase nativeDatabase) : super(abrirConexion());
   @override
   int get schemaVersion => 1;
+
+  Future<int> insertPost(PosteoCompanion posteoCompanion) async {
+    return await into(posteo).insert(posteoCompanion);
+  }
+
+  Future<List<PosteoData>> getListadoPost() async {
+    return await select(posteo).get();
+  }
 }

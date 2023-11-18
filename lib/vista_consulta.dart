@@ -1,3 +1,7 @@
+import 'package:drift/drift.dart' as dr;
+import 'package:drift/native.dart';
+import 'package:examen_final_fija/database/database.dart';
+import 'package:examen_final_fija/vista_listado.dart';
 import 'package:flutter/material.dart';
 import 'package:examen_final_fija/api/Service.dart';
 import 'package:examen_final_fija/api/Post.dart';
@@ -21,6 +25,8 @@ class _VistaConsultaState extends State<VistaConsulta> {
 
   @override
   Widget build(BuildContext context) {
+    final database = AppDataBases(NativeDatabase.memory());
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Consulta de Post"),
@@ -54,6 +60,25 @@ class _VistaConsultaState extends State<VistaConsulta> {
                     Text("ID: " + snapshot.data!.id.toString()),
                     Text("Title: " + snapshot.data!.title.toString()),
                     Text("Body: " + snapshot.data!.body.toString()),
+                    ElevatedButton(
+                        onPressed: () {
+                          database
+                              .insertPost(PosteoCompanion(
+                            id: dr.Value(snapshot.data!.id),
+                            userId: dr.Value(snapshot.data!.userId),
+                            title: dr.Value(snapshot.data!.title),
+                            Body: dr.Value(snapshot.data!.body),
+                          ))
+                              .then((value) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => VistaListado(),
+                              ),
+                            );
+                          });
+                        },
+                        child: Text("Guardar Post"))
                   ],
                 ),
               );
