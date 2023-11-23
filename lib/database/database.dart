@@ -34,4 +34,8 @@ class AppDataBases extends _$AppDataBases {
   Future<List<PosteoData>> getListadoPost() async {
     return await select(posteo).get();
   }
+
+  Future<int> deletePost(int id) async {
+    return await (delete(posteo)..where((tbl) => tbl.id.equals(id))).go();
+  }
 }
